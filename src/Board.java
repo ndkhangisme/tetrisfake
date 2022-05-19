@@ -27,7 +27,7 @@ import javax.swing.Timer;
 
 
 
-public class Board extends JPanel implements KeyListener, MouseListener, MouseMotionListener{
+public class Board extends JPanel implements KeyListener, MouseListener, MouseMotionListener {
 	
 	//Assets
 	
@@ -38,12 +38,12 @@ public class Board extends JPanel implements KeyListener, MouseListener, MouseMo
 
 	private Clip music;
 	
-	private BufferedImage blocks, background, pause, speaker;
+	private BufferedImage blocks, background, pause, speaker, home;
 	
 	//board dimensions (the playing area)
-	
+	private Window window;
 	//private final int boardHeight = 20, boardWidth = 10;
-	
+	public boolean running;
 	// block size
 	
 	private final int blockSize = 30;
@@ -60,7 +60,7 @@ public class Board extends JPanel implements KeyListener, MouseListener, MouseMo
 	
 	public static Shape currentShape, nextShape;
 	
-	
+	public static Title title;
 	//fonts
 	
 	public static Font pixelfont;
@@ -79,7 +79,7 @@ public class Board extends JPanel implements KeyListener, MouseListener, MouseMo
 	
 	private boolean leftClick = false;
 	
-	private Rectangle stopBounds, speakerBounds;
+	private Rectangle pauseBounds, speakerBounds, homeBounds;
 	
 	private boolean gamePaused = false;
 	
@@ -99,17 +99,19 @@ public class Board extends JPanel implements KeyListener, MouseListener, MouseMo
 	// score
 	
 	public static int score = 0, highScore = 0, scoreToAdd = 0;
+
+	//private static Window getWindow;
 	
 	
 	
-	public Board(){
+	public Board(Window window){
 		// load Assets
 		blocks = ImageLoader.loadImage("/tiles.png");
 		
 		background = ImageLoader.loadImage("/bg.png");
 		pause = ImageLoader.loadImage("/pauseandplay1.png");
 		speaker = ImageLoader.loadImage("/speaker1.png");
-		
+		home = ImageLoader.loadImage("/home1.png");
 		music = ImageLoader.LoadSound("/music.wav");
 		
 		
@@ -120,7 +122,9 @@ public class Board extends JPanel implements KeyListener, MouseListener, MouseMo
 		mouseX = 0;
 		mouseY = 0;
 		
-		stopBounds = new Rectangle(350, 530, pause.getSubimage(0, 0, 50, 50).getWidth(), pause.getSubimage(0, 0, 50, 50).getHeight() + pause.getSubimage(0, 0, 50, 50).getHeight()/2);
+		homeBounds = new Rectangle(350, 530 - home.getHeight() - 90,home.getWidth(),
+				home.getHeight()+ home.getHeight());
+		pauseBounds = new Rectangle(350, 530, pause.getSubimage(0, 0, 50, 50).getWidth(), pause.getSubimage(0, 0, 50, 50).getHeight() + pause.getSubimage(0, 0, 50, 50).getHeight()/2);
 		speakerBounds = new Rectangle(350, 530 - speaker.getSubimage(0, 0, 50, 50).getHeight() - 20,speaker.getSubimage(0, 0, 50, 50).getWidth(),
 				speaker.getSubimage(0, 0, 50, 50).getHeight()+ speaker.getSubimage(0, 0, 50, 50).getHeight());
 		
@@ -164,11 +168,18 @@ public class Board extends JPanel implements KeyListener, MouseListener, MouseMo
 			{1, 1},   // O shape;
 		}, blocks.getSubimage(blockSize*6, 0, blockSize, blockSize), this, 7);
 		
-		
+		this.window = window;
 	}
 	
-	private void update(){	
-		if(stopBounds.contains(mouseX, mouseY) && leftClick && !buttonLapse.isRunning() && !gameOver)
+	public void update(){	
+		
+		if(homeBounds.contains(mouseX, mouseY) && leftClick && !buttonLapse.isRunning()) {
+			buttonLapse.stop();
+			gameOver = false;
+			window.backToMenu();
+			}
+			
+		if(pauseBounds.contains(mouseX, mouseY) && leftClick && !buttonLapse.isRunning() && !gameOver)
 		{
 			buttonLapse.start();
 			gamePaused = !gamePaused;
@@ -202,6 +213,7 @@ public class Board extends JPanel implements KeyListener, MouseListener, MouseMo
 		
 		g.drawImage(background, 0, 0, null);
 		
+		//draw blocks 
 		for(int row = 0; row < board.length; row++)
 		{
 			for(int col = 0; col < board[row].length; col++)
@@ -215,7 +227,7 @@ public class Board extends JPanel implements KeyListener, MouseListener, MouseMo
 					
 			}
 		}
-		
+		//draw next shape
 		for(int row = 0; row < nextShape.getCoords()[0].length; row++)
 		{
 			for(int col = 0; col < nextShape.getCoords().length; col++)
@@ -226,34 +238,54 @@ public class Board extends JPanel implements KeyListener, MouseListener, MouseMo
 				}
 			}		
 		}
+		//draw guid
+//		g.setColor(Color.BLUE);
+//		//if(showGuide) {
+//			for(int i = currentShape.getX(); i < currentShape.getX() + currentShape.getCoords().length; i++) {
+//				for(int j = currentShape.getY() + currentShape.getCoords()[0].length; j < board[0].length ; j++) {
+//					if(board[i][j] == 0) {
+//						g.drawRoundRect(i * blockSize + 1/5, j*blockSize + 1/2 , blockSize, blockSize, 0, 0);
+//					}else {
+//						break;
+//					}
+//				}
+//			}
+		//}
+
 		currentShape.render(g);
+		
+		//create and add fonts
 		try {
 			pixelfont = Font.createFont(Font.TRUETYPE_FONT, new File("fonts/bulky-pixels.regular.ttf")).deriveFont(15f);
 		} catch (FontFormatException e) {
-			// TODO Auto-generated catch block
+			
 			e.printStackTrace();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
+			
 			e.printStackTrace();
 		}
-		
-		if(stopBounds.contains(mouseX, mouseY))
+		if(homeBounds.contains(mouseX, mouseY)) {
+			g.drawImage(home.getScaledInstance(home.getWidth() + 2, home.getHeight() + 2, BufferedImage.SCALE_DEFAULT)
+				, homeBounds.x, homeBounds.y, null);
+			}else
+				g.drawImage(home, homeBounds.x, homeBounds.y, null);
+
+		if(pauseBounds.contains(mouseX, mouseY))
 			if(gamePaused) {
 				g.drawImage(pause.getSubimage(50, 0, 50, 50).getScaledInstance(pause.getSubimage(50, 0, 50, 50).getWidth() + 2, pause.getSubimage(50, 0, 50, 50).getHeight() + 2, BufferedImage.SCALE_DEFAULT)
-				, stopBounds.x, stopBounds.y, null);
-				
+				, pauseBounds.x, pauseBounds.y, null);
 			}else
 				g.drawImage(pause.getSubimage(0, 0, 50, 50).getScaledInstance(pause.getSubimage(0, 0, 50, 50).getWidth() + 2, pause.getSubimage(0, 0, 50, 50).getHeight() + 2, BufferedImage.SCALE_DEFAULT)
-						, stopBounds.x, stopBounds.y, null);
+						, pauseBounds.x, pauseBounds.y, null);
 			
 		else {
 			if(gamePaused) {
-				g.drawImage(pause.getSubimage(50, 0, 50, 50), stopBounds.x, stopBounds.y, null);
+				g.drawImage(pause.getSubimage(50, 0, 50, 50), pauseBounds.x, pauseBounds.y, null);
+				
 			}else
-				g.drawImage(pause.getSubimage(0, 0, 50, 50), stopBounds.x, stopBounds.y, null);
+				g.drawImage(pause.getSubimage(0, 0, 50, 50), pauseBounds.x, pauseBounds.y, null);
 		}
 			
-		
 
 		if(speakerBounds.contains(mouseX, mouseY)) {
 			//setMute(!isMute);
@@ -325,7 +357,7 @@ public class Board extends JPanel implements KeyListener, MouseListener, MouseMo
 	
 	public void setNextShape(){
 		int index = (int)(Math.random()*shapes.length);
-		nextShape = new Shape(shapes[6].getCoords(), shapes[index].getBlock(), this, shapes[index].getColor());
+		nextShape = new Shape(shapes[index].getCoords(), shapes[index].getBlock(), this, shapes[index].getColor());
 	}
 	
 
@@ -365,6 +397,10 @@ public class Board extends JPanel implements KeyListener, MouseListener, MouseMo
 			currentShape.speedUp();
 		if(e.getKeyCode() == KeyEvent.VK_ENTER)
 			startGame();
+		
+			
+		
+		
 		if(e.getKeyCode() == KeyEvent.VK_M) {
 			setMute(!isMute);
 
@@ -389,16 +425,17 @@ public class Board extends JPanel implements KeyListener, MouseListener, MouseMo
 	public void keyTyped(KeyEvent e) {
 		
 	}
-	
+
 	public void startGame(){
-		stopGame();
+		pauseGame();
 		setNextShape();
 		setCurrentShape();
 		gameOver = false;
 		looper.start();
+		running = true;
 		
 	}
-	public void stopGame(){
+	public void pauseGame(){
 		score = 0;
 		
 		for(int row = 0; row < board.length; row++)
@@ -409,6 +446,7 @@ public class Board extends JPanel implements KeyListener, MouseListener, MouseMo
 			}
 		}
 		looper.stop();
+		
 	}
 	
 	public boolean isMute() {

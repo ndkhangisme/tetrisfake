@@ -58,11 +58,8 @@ public class Shape {
 						board.getBoard()[x + col][y + row] = color;
 				}
 			}
-			//checkLine();
-			//board.addScore();
+			
 			checkFullRow(1);
-			
-			
 			board.setCurrentShape();
 		}
 		
@@ -130,16 +127,6 @@ public class Shape {
 				}
 			}		
 		}
-//		for(int i = 0; i < boardWidth; i++) { //grid height 
-//			for(int j = 0; j < boardHeight; j++) { //width
-//				//g.drawImage(blocks.getSubimage(board[i][j]), i*blockSize + 50, j*blockSize+20, blockSize, blockSize, null);
-//				
-//				if(board[i][j] > 0) {
-//					g.setColor(Color.BLACK);
-//					g.drawRoundRect(i*blockSize + 50, j*blockSize+20, blockSize, blockSize, 1, 1);
-//				}
-//			}
-//		}
 
 	}
 	
@@ -148,7 +135,6 @@ public class Shape {
 
 		for (int y = board.getBoard()[0].length - 1; y > 0; y--) {
 			for (int x = 0; x < board.getBoard().length; x++) {
-				//System.out.println(board.getBoard().length);
 				if (board.getBoard()[x][y] > 0) {
 					blocksInRow++;
 					
@@ -156,9 +142,7 @@ public class Shape {
 				
 			}
 			if (blocksInRow == 10) {
-				//System.out.println("---");
 				board.scoreToAdd += (10 * multiplier);
-				System.out.println(10 * multiplier);
 				delRow(y, multiplier);
 				break;
 			} else {
@@ -182,7 +166,7 @@ public class Shape {
 			board.getBoard()[i][row] = 0;
 			
 		}
-		System.out.println("---");
+		//System.out.println("---");
 		for (int y = row; y > 1; y--) {
 			for (int x = 0; x < board.getBoard().length; x++) {
 				board.getBoard()[x][y] = board.getBoard()[x][y - 1];

@@ -4,9 +4,9 @@ public class Window{
 	//413
 	public static final int WIDTH = 450, HEIGHT = 637;
 	
-	private Board board;
-	private Title title;
-	private JFrame window;
+	public static Board board;
+	public static Title title;
+	public static JFrame window;
 	
 	public Window(){
 		
@@ -16,7 +16,7 @@ public class Window{
 		window.setLocationRelativeTo(null);
 		window.setResizable(false);	
 		
-		board = new Board();
+		board = new Board(this);
 		title = new Title(this);
 		
 		window.addKeyListener(board);
@@ -35,7 +35,13 @@ public class Window{
 		board.startGame();
 		window.revalidate();
 	}
-	
+	public void backToMenu(){
+		window.remove(board);
+		window.addMouseMotionListener(title);
+		window.addMouseListener(title);
+		window.add(title);
+		window.setVisible(true);
+	}
 	public static void main(String[] args) {
 		new Window();
 	}
