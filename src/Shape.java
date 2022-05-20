@@ -31,10 +31,9 @@ public class Shape {
 		this.block = block;
 		this.board = board;
 		this.color = color;
-		deltaX = 0;
 		x = 4;
 		y = 0;
-		delay = normal;
+		delay = Level(0);
 		time = 0;
 		lastTime = System.currentTimeMillis();
 		reference = new int[coords.length][coords[0].length];
@@ -58,17 +57,15 @@ public class Shape {
 						board.getBoard()[x + col][y + row] = color;
 				}
 			}
-			
 			checkFullRow(1);
 			board.setCurrentShape();
 		}
 		
 		if(!(x + deltaX + coords[0].length > 10) && !(x + deltaX < 0))
 		{
-			
 			for(int row = 0; row < coords.length; row++)
 			{
-				for(int col = 0; col < coords[row].length; col ++)
+				for(int col = 0; col < coords[row].length; col++)
 				{
 					if(coords[row][col] != 0)
 					{
@@ -83,20 +80,21 @@ public class Shape {
 			
 			if(moveX)
 				x += deltaX;
-			
 		}
+		deltaX = 0;
 		
+		//System.out.println(delay);
 		if(!(y + 1 + coords.length > 20))
 		{
 			
 			for(int row = 0; row < coords.length; row++)
 			{
-				for(int col = 0; col < coords[row].length; col ++)
+				for(int col = 0; col < coords[row].length; col++)
 				{
 					if(coords[row][col] != 0)
 					{
 						
-						if(board.getBoard()[x +  col][y + 1 + row] != 0)
+						if(board.getBoard()[x + deltaX + col][y + 1 + row] != 0)
 						{
 							collision = true;
 						}
@@ -106,7 +104,7 @@ public class Shape {
 			if(time > delay)
 				{
 					y++;
-					time = 0;
+					time=0;
 				}
 		}else{
 			collision = true;
@@ -235,7 +233,20 @@ public class Shape {
 		return matrix;
 		
 	}
-	
+
+	public int Level(int lel) {
+		if(board.score < 500) {
+			lel = normal = 600;
+		}
+		if(500 <= board.score && board.score < 1000) {
+			lel = normal = 300;
+		}
+		if(board.score >= 1000) {
+			lel = normal = 100;
+		}
+		return lel;
+		
+	}
 	
 	public int getColor(){
 		return color;
