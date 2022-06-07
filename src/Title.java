@@ -70,7 +70,7 @@ public class Title extends JPanel implements MouseListener, MouseMotionListener{
 		
 		quitBounds = new Rectangle(Window.WIDTH/2 - 50, Window.HEIGHT/2 + 65, 100, 50);
 		
-		reportBounds = new Rectangle(Window.WIDTH - 40, Window.HEIGHT - 40, 20, 20);
+		reportBounds = new Rectangle(Window.WIDTH - 40, Window.HEIGHT - 30, 20, 20);
 		
 		
 		this.window = window;
@@ -160,6 +160,7 @@ public class Title extends JPanel implements MouseListener, MouseMotionListener{
 	public void mousePressed(MouseEvent e) {
 		if(e.getButton() == MouseEvent.BUTTON1)
 			leftClick = true;
+			running = true;
 			
 	}
 
@@ -167,7 +168,7 @@ public class Title extends JPanel implements MouseListener, MouseMotionListener{
 	public void mouseReleased(MouseEvent e) {
 		if(e.getButton() == MouseEvent.BUTTON1)
 			leftClick = false;
-			running = true;
+			
 	}
 
 	@Override

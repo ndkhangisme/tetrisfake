@@ -95,13 +95,14 @@ public class HowToPlay extends JPanel implements MouseListener, MouseMotionListe
 	public void mousePressed(MouseEvent e) {
 		if(e.getButton() == MouseEvent.BUTTON1)
 			leftClick = true;
+			running = true;
 	}
 
 	@Override
 	public void mouseReleased(MouseEvent e) {
 		if(e.getButton() == MouseEvent.BUTTON1)
 			leftClick = false;
-			running = true;
+			
 	}
 
 	@Override

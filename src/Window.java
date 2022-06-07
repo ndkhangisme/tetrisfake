@@ -2,7 +2,6 @@ import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
 public class Window{
-	//413
 	public static final int WIDTH = 450, HEIGHT = 637;
 	
 	public static Board board;
@@ -17,7 +16,6 @@ public class Window{
 		window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		window.setLocationRelativeTo(null);
 		window.setResizable(false);	
-		
 		board = new Board(this);
 		title = new Title(this);
 		howToPlay = new HowToPlay(this);
@@ -41,8 +39,6 @@ public class Window{
 	public void backToMenu(){
 		window.remove(board);
 		window.remove(howToPlay);
-//		window.addMouseMotionListener(title);
-//		window.addMouseListener(title);
 		window.add(title);
 		window.setVisible(true);
 	}

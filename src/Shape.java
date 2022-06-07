@@ -140,7 +140,17 @@ public class Shape {
 				
 			}
 			if (blocksInRow == 10) {
-				board.scoreToAdd += (10 * multiplier);
+				int n = 10;
+				if(board.score < 500) {
+					n = 10;
+				}
+				if(500 <= board.score && board.score < 1000) {
+					n = 25;
+				}
+				if(board.score >= 1000) {
+					n = 40;
+				}
+				board.scoreToAdd += (n * multiplier);
 				delRow(y, multiplier);
 				break;
 			} else {
@@ -245,9 +255,7 @@ public class Shape {
 			lel = normal = 100;
 		}
 		return lel;
-		
 	}
-	
 	public int getColor(){
 		return color;
 	}

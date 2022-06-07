@@ -166,8 +166,7 @@ public class Board extends JPanel implements KeyListener, MouseListener, MouseMo
 	
 	public void update(){	
 		
-		if(homeBounds.contains(mouseX, mouseY) && leftClick && !buttonLapse.isRunning()) {
-			buttonLapse.stop();
+		if(homeBounds.contains(mouseX, mouseY) && leftClick) {
 			gameOver = false;
 			window.backToMenu();
 			}
@@ -494,13 +493,15 @@ public class Board extends JPanel implements KeyListener, MouseListener, MouseMo
 	public void mousePressed(MouseEvent e) {
 		if(e.getButton() == MouseEvent.BUTTON1)
 			leftClick = true;
+			running = true;
 	}
 
 	@Override
 	public void mouseReleased(MouseEvent e) {
 		if(e.getButton() == MouseEvent.BUTTON1)
 			leftClick = false;
-			running = true;
+			
+			//System.out.println(running);
 	}
 
 	@Override
